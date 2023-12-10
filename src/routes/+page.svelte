@@ -102,7 +102,6 @@
     $: {
         if (activeSeed) {
             if (browser) requestAnimationFrame(automation);
-        } else {
         }
     }
 </script>

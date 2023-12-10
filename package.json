@@ -3,6 +3,7 @@
     "version": "0.0.1",
     "scripts": {
         "dev": "vite dev --host",
+        "generate-pwa-assets": "pwa-assets-generator",
         "build": "vite build",
         "preview": "vite preview --host",
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -15,6 +16,7 @@
         "@sveltejs/adapter-auto": "^2.0.0",
         "@sveltejs/kit": "^1.27.4",
         "@types/cookie": "^0.5.1",
+        "@vite-pwa/assets-generator": "^0.0.11",
         "@vite-pwa/sveltekit": "^0.2.10",
         "prettier": "^3.1.0",
         "prettier-plugin-svelte": "^3.1.2",
