@@ -1,12 +1,9 @@
 <script lang="ts">
-    import {
-        type Memory,
-        type ActiveMemory,
-        getActive,
-    } from '$lib/memory';
+    import { type Memory, type ActiveMemory, getActive } from '$lib/memory';
     import { memoryStorage } from '$lib/storage';
     import { browser } from '$app/environment';
     import Seeds from './Seeds.svelte';
+    import { MurmurHash3_x86_128 } from '$lib/murmurhash3_128';
 
     $: seeds = Array<Memory>();
     $: open = false;
@@ -26,21 +23,66 @@
     let upperSignal: HTMLElement | null = null;
     let lowerSignal: HTMLElement | null = null;
 
+    function leastPeriod(x: number): number {
+        let res = x.toString();
+        let a = 0;
+        let b = 0;
+        for (let i = 0; i < res.length; i++) {
+            if (a === 0 && res[i] !== '0') {
+                a = parseInt(res[i]);
+            }
+            if (b === 0 && res[res.length - 1 - i] !== '0') {
+                b = parseInt(res[res.length - 1 - i]);
+            }
+        }
+
+        return a === 0 ? 4200 : (a << 6) + (b << 7);
+    }
+
+    type PairsCache = {
+        raw: string | null;
+    };
+
+    let pairsCache: PairsCache = {
+        raw: null,
+    };
+
     const automation = () => {
         const date = new Date();
-        const seedUpper =
-            activeSeed.seed +
-            date.getDate() +
-            Math.floor(date.getUTCMilliseconds() / 5000 / parseInt(activeSeed.seed.slice(0,2)));
-        const seedNumber = parseInt(seedUpper, 16);
-        const hue = seedNumber % 360;
-        const saturation = 100 - (seedNumber % 20);
-        const lightness = 50 - (seedNumber % 20);
-        const colorStringUpper = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        const dateString = Math.floor(
+            date.getUTCMilliseconds() /
+                leastPeriod(
+                    parseInt(activeSeed.seed.slice(0, 2), 16) *
+                        Math.floor(date.getUTCMilliseconds() / 200),
+                ),
+        ).toString();
+
+        const priorSeed = dateString + activeSeed.seed + Math.floor(date.getUTCMilliseconds() / 10000);
+        if (pairsCache.raw === priorSeed) {
+            requestAnimationFrame(automation);
+
+            return;
+        }
+        const seedUpper = MurmurHash3_x86_128(
+            priorSeed,
+            parseInt(activeSeed.seed, 16),
+        );
+        const seedLower = MurmurHash3_x86_128(
+            Array.from(priorSeed).reverse().join(''),
+            parseInt(activeSeed.seed.slice(4), 16),
+        );
+
+        const hueU = seedUpper[1] % 360;
+        const saturationU = 100 - (seedUpper[2] % 20);
+        const lightnessU = 50 - (seedUpper[3] % 20);
+        const hueL = seedLower[1] % 360;
+        const saturationL = 100 - (seedLower[2] % 20);
+        const lightnessL = 50 - (seedLower[3] % 20);
+        const colorStringUpper = `hsl(${hueU}, ${saturationU}%, ${lightnessU}%)`;
         // contrast colour
         const colorStringLower = `hsl(${
-            hue + 80
-        }, ${saturation}%, ${lightness}%)`;
+            hueL + 80
+        }, ${saturationL}%, ${lightnessL}%)`;
         if (upperSignal && lowerSignal) {
             (upperSignal as HTMLElement).style.setProperty(
                 '--upper-signal-color',
@@ -51,18 +93,18 @@
                 colorStringLower,
             );
         }
-        
+
+        pairsCache.raw = priorSeed;
+
         requestAnimationFrame(automation);
-    }
+    };
 
     $: {
         if (activeSeed) {
             if (browser) requestAnimationFrame(automation);
         } else {
-            
         }
     }
-
 </script>
 
 <svelte:head>
