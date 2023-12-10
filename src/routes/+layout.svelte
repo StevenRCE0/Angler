@@ -1,12 +1,27 @@
 <script>
-    import './reset.css';
-	import {pwaInfo} from 'virtual:pwa-info';
-
-    $: webManifestLink = pwaInfo ? pwaInfo.webManifest.linkTag : '' 
+  import { onMount } from 'svelte'
+  import { pwaInfo } from 'virtual:pwa-info'
+  import './reset.css'
+  
+  onMount(async () => {
+    if (pwaInfo) {
+      const { registerSW } = await import('virtual:pwa-register')
+      registerSW({
+        immediate: true,
+        onRegisterError(error) {
+          console.log('SW registration error', error)
+        }
+      })
+    }
+  })
+  
+  $: webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : ''
 </script>
 
 <svelte:head>
-    {@html webManifestLink}
+    {@html webManifest}
 </svelte:head>
 
-<slot />
+<main>
+  <slot />
+</main>
