@@ -7,6 +7,9 @@
         type ActiveMemory,
     } from '$lib/memory';
     import Field from '../components/Field.svelte';
+    import { useRegisterSW } from 'virtual:pwa-register/svelte';
+
+    const { offlineReady, needRefresh } = useRegisterSW();
 
     export let refresh: () => void;
     export let seeds: Array<Memory>;
@@ -88,6 +91,10 @@
     >
         [plant]
     </button>
+    {#if offlineReady}
+        <br />
+        <div class="OLR">Anglerfish is with you all the time</div>
+    {/if}
 </div>
 
 <style>
@@ -110,6 +117,14 @@
     .Activate {
         color: #00f;
         text-decoration: underline;
+    }
+    .OLR {
+        float: right;
+        margin-top: 1em;
+        color: rgba(0, 0, 0, 0.35);
+        text-align: right;
+        font-size: 9pt;
+        max-width: 80%;
     }
     button {
         all: unset;
