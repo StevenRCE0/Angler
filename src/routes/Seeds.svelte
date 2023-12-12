@@ -100,6 +100,7 @@
         max-height: 70dvh;
         border: 3pt double rgba(0, 0, 0, 0.35);
         background: white;
+        overflow-y: scroll;
     }
     .Rm {
         color: red;
