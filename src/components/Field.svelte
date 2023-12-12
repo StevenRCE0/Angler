@@ -38,7 +38,7 @@
             width: canvas.width - 2 * padding,
             height: canvas.height - 2 * padding,
         };
-        const sectionWidth = canvas.width / (targetHeightLength - 1);
+        const sectionWidth = bounds.width / (targetHeightLength - 1);
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.strokeStyle = '#000000';
