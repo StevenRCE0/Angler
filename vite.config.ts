@@ -1,7 +1,6 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 import { defineConfig } from 'vite';
-import process from 'node:process';
 
 export default defineConfig({
     plugins: [
@@ -9,8 +8,6 @@ export default defineConfig({
         SvelteKitPWA({
             srcDir: './src',
             mode: 'development',
-            // you don't need to do this if you're using generateSW strategy in your app
-            strategies: 'generateSW',
             scope: '/',
             base: '/',
             selfDestroying: process.env.SELF_DESTROYING_SW === 'true',
