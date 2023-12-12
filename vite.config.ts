@@ -1,21 +1,27 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 import { defineConfig } from 'vite';
+import process from 'node:process';
 
 export default defineConfig({
     plugins: [
         sveltekit(),
         SvelteKitPWA({
-            registerType: 'autoUpdate',
-            injectRegister: 'inline',
-            includeAssets: ['*.svg', '*.png', 'robots.txt'],
+            srcDir: './src',
+            mode: 'development',
+            // you don't need to do this if you're using generateSW strategy in your app
+            strategies: 'generateSW',
+            scope: '/',
+            base: '/',
+            selfDestroying: process.env.SELF_DESTROYING_SW === 'true',
             manifest: {
+                short_name: 'Angler',
                 name: 'Anglerfish',
                 start_url: '/',
-                id: '/',
-                short_name: 'Angler',
-                description: '((hello))',
+                scope: '/',
+                display: 'standalone',
                 theme_color: '#e3e3e3',
+                background_color: '#e3e3e3',
                 icons: [
                     {
                         src: '/pwa-192x192.png',
@@ -28,12 +34,32 @@ export default defineConfig({
                         type: 'image/png',
                     },
                     {
-                        src: 'maskable-icon-512x512.png',
+                        src: '/pwa-512x512.png',
                         sizes: '512x512',
                         type: 'image/png',
-                        purpose: 'maskable',
+                        purpose: 'any maskable',
                     },
                 ],
+            },
+            injectManifest: {
+                globPatterns: [
+                    'client/**/*.{js,css,ico,png,svg}',
+                ],
+            },
+            workbox: {
+                globPatterns: [
+                    'client/**/*.{js,css,ico,png,svg}',
+                ],
+            },
+            devOptions: {
+                enabled: true,
+                suppressWarnings: process.env.SUPPRESS_WARNING === 'true',
+                type: 'module',
+                navigateFallback: '/',
+            },
+            // if you have shared info in svelte config file put in a separate module and use it also here
+            kit: {
+                includeVersionFile: true,
             },
         }),
     ],
