@@ -16,7 +16,8 @@
         });
     }
 
-    $: newName = '';
+    let newName = data.name ?? '';
+
     function plantSeed() {
         setSeed(data.seed, newName);
         goto('/');

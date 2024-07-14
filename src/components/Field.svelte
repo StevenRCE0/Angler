@@ -3,7 +3,6 @@
 
     export let value: string;
     export let placeholder: string | undefined;
-
     let canvas: HTMLCanvasElement | undefined;
     let resizeObserver: ResizeObserver | undefined;
 

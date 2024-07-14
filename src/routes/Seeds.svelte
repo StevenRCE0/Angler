@@ -43,13 +43,20 @@
     $: okToAdd =
         newSeed.length === 8 &&
         seeds.map((x) => x.seed).indexOf(newSeed) === -1;
+
+    function getShareLink(seed: Memory): string {
+        if (seed.notation.length === 0) {
+            return `seed?seed=${seed.seed}`;
+        }
+        return `seed?seed=${seed.seed}&name=${seed.notation}`;
+    }
 </script>
 
 <div class="Menu">
     {#if seeds.length > 0}
         <h3>Select your seed</h3>
         {#each seeds as seed}
-            <div>
+            <div class="SeedContainer">
                 {#if activeSeed && activeSeed.seed === seed.seed}
                     {seed.notation.length > 0 ? seed.notation : seed.seed}
                 {:else}
@@ -62,6 +69,13 @@
                         {seed.notation.length > 0 ? seed.notation : seed.seed}
                     </button>
                 {/if}
+                <div class="SeedSpacer" />
+                <a
+                    href={getShareLink(seed)}
+                    on:click={(e) => e.preventDefault()}
+                >
+                    [link]
+                </a>
                 <button
                     class="Rm"
                     on:click={() => {
@@ -129,5 +143,16 @@
     button {
         all: unset;
         cursor: pointer;
+    }
+    .SeedContainer {
+        display: flex;
+        align-items: center;
+    }
+    .SeedSpacer {
+        display: inline-block;
+        flex-grow: 1;
+        border-bottom: 2px dotted black;
+        height: calc(1em - 2px);
+        margin: 0 .5em;
     }
 </style>
