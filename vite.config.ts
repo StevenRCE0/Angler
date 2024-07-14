@@ -15,7 +15,6 @@ export default defineConfig({
                 short_name: 'Angler',
                 name: 'Anglerfish',
                 start_url: '/',
-                scope: '/',
                 display: 'standalone',
                 theme_color: '#e3e3e3',
                 background_color: '#e3e3e3',
