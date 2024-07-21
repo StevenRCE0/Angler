@@ -41,3 +41,8 @@ export async function getActive(): Promise<ActiveMemory> {
     
     return active[0];
 }
+
+export interface ImportingSeedType {
+    seed: string;
+    name: string | null;
+}

@@ -1,32 +1,33 @@
 <script lang="ts">
     import { browser } from '$app/environment';
     import { goto } from '$app/navigation';
-    import { setSeed } from '$lib/memory';
+    import { ImportingSeedType, setSeed } from '$lib/memory';
     import { memoryStorage } from '$lib/storage';
-    import Field from '../../components/Field.svelte';
+    import Field from '../Field.svelte';
 
-    export let data;
+    export let importing: ImportingSeedType;
     let unique: boolean | null = null;
 
     if (browser) {
         memoryStorage.content.toArray().then((x) => {
-            x.find((y) => y.seed === data.seed) === undefined
+            x.find((y) => y.seed === importing.seed) === undefined
                 ? (unique = true)
                 : (unique = false);
         });
     }
 
-    let newName = data.name ?? '';
+    let newName = importing.name ?? '';
 
     function plantSeed() {
-        setSeed(data.seed, newName);
-        goto('/');
+        setSeed(importing.seed, newName);
+        // empty search parameters
+        goto('.');
     }
 </script>
 
 {#if browser}
     <div class="Menu">
-        <h3>{data.seed}</h3>
+        <h3>{importing.seed}</h3>
         {#if unique}
             <h2>Give this seed a name</h2>
             <div style="max-width: 288pt">
@@ -42,7 +43,7 @@
         {:else}
             <h2>This seed is already planted</h2>
         {/if}
-        <button on:click={() => goto('/')}>[cancel]</button>
+        <button on:click={() => goto('.')}>[cancel]</button>
     </div>
 {/if}
 

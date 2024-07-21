@@ -23,10 +23,5 @@ cleanupOutdatedCaches();
 
 // to allow work offline
 registerRoute(
-    new NavigationRoute(createHandlerBoundToURL('/seed'), {
-        allowlist: [/^seed.*$/],
-    }),
-);
-registerRoute(
-    new NavigationRoute(createHandlerBoundToURL('/'), { allowlist: [/^\/$/] }),
+    new NavigationRoute(createHandlerBoundToURL('/')),
 );

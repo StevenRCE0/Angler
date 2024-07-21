@@ -46,9 +46,9 @@
 
     function getShareLink(seed: Memory): string {
         if (seed.notation.length === 0) {
-            return `seed?seed=${seed.seed}`;
+            return `?seed=${seed.seed}`;
         }
-        return `seed?seed=${seed.seed}&name=${seed.notation}`;
+        return `?seed=${seed.seed}&name=${seed.notation}`;
     }
 </script>
 
